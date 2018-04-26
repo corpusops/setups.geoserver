@@ -25,10 +25,24 @@
 - include_role: {name: corpusops.roles/install_archive}
   with_items: "{{geoserver_vars.plugin_archives}}"
   loop_control: {loop_var: _archive}
+- name: marlin
+  get_url:
+    url: "{{item.url}}"
+    checksum: "{{item.checksum}}"
+    remote_src: true
+    dest: "{{geoserver_vars.root}}"
+    mode: "0644"
+  tags: [marlin1]
+  with_items: "{{geoserver_vars.marlin}}"
 - shell: |
     set -ex
     t=geoserver/WEB-INF/lib/
     cd "{{geoserver_vars.root}}"
-    rsync -av *jar $t/
     rm -vf $t/jai_core-*jar $t/jai_imageio-*.jar $t/jai_codec-*.jar
+    rsync -av marlin*jar ../jai/lib/*jar $t/
   changed_when: false
+- synchronize:
+    rsync_opts: ['-av', '--delete']
+    src: "{{geoserver_vars.root}}/geoserver/"
+    dest: "{{geoserver_vars.home}}/"
+  delegate_to: "{{ inventory_hostname }}"

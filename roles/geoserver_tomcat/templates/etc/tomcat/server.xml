@@ -68,8 +68,8 @@
          Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
     -->
     <Connector port="{{geoserver_vars.port}}" protocol="HTTP/1.1"
-               connectionTimeout="20000"
-               redirectPort="{{geoserver_vars.sport}}" />
+      connectionTimeout="20000"     address="{{geoserver_vars.address}}"
+      redirectPort="{{geoserver_vars.sport}}" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"

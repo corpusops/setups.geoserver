@@ -1,36 +1,46 @@
 ---
 - block:
+  - register: cops_configs_filesl
+    debug:
+       msg: |-
+        {% set res = [
+        {'name': geoserver_vars.data,
+         'mode': "0755",
+         'owner': geoserver_vars.tomcat,
+         'group': geoserver_vars.tomcat,
+         'state': 'directory'},
+        ] %}
+        {{ res | to_json }}
   - register: cops_configs_templatesl
     debug:
        msg: |-
-        {% set res = [] %}
-        {%  set _ = res.append({
-          'name': "/etc/{0}/tomcat-users.xml".format(geoserver_vars.tomcat),
-          'mode': "0644",
-          'owner': "root",
-          'group': "root",
-          'template': '../templates/etc/tomcat/server.xml',
-          }) %}
-        {%  set _ = res.append({
-          'name': "/etc/{0}/tomcat-users.xml".format(geoserver_vars.tomcat),
-          'mode': "0644",
-          'owner': "root",
-          'group': "root",
-          'template': '../templates/etc/tomcat/tomcat-users.xml',
-          }) %}
-        {%  set _ = res.append({
-          'name': "/etc/default/{0}".format(geoserver_vars.tomcat),
-          'mode': "0644",
-          'owner': "root",
-          'group': "root",
-          'template': '../templates/default/tomcat',
-          }) %}
+        {% set res = [
+        {'name': "{0}/WEB-INF/web.xml".format(geoserver_vars.home),
+         'mode': "0644",
+         'owner': "root",
+         'group': "root",
+         'template': '../templates/webapp/WEB-INF/web.xml'},
+        {'name': "/etc/{0}/server.xml".format(geoserver_vars.tomcat),
+         'mode': "0644",
+         'owner': "root",
+         'group': "root",
+         'template': '../templates/etc/tomcat/server.xml'},
+        {'name': "/etc/{0}/tomcat-users.xml".format(geoserver_vars.tomcat),
+         'mode': "0644",
+         'owner': "root",
+         'group': "root",
+         'template': '../templates/etc/tomcat/tomcat-users.xml'},
+        {'name': "/etc/default/{0}".format(geoserver_vars.tomcat),
+         'mode': "0644",
+         'owner': "root",
+         'group': "root",
+         'template': '../templates/default/tomcat'},
+        ] %}
         {{ res | to_json }}
-    cops_configs_templates: "{{cops_configs_templatesl.msg}}"
   - include_role: {name: corpusops.roles/configs, private: true}
     vars:
-      cops_configs_files: []
       cops_configs_copys: []
+      cops_configs_files: "{{cops_configs_filesl.msg}}"
       cops_configs_templates: "{{cops_configs_templatesl.msg}}"
 - cops_service:
     name: "{{geoserver_vars.tomcat}}"

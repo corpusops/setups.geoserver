@@ -3,17 +3,18 @@ geoserver_cops_sub_namespaces:
   nginx: {}
 geoserver_version: "2.13.0"
 geoserver_home: "/var/lib/{{vars['geoserver_tomcat']}}/webapps/geoserver"
+geoserver_data: "/srv/geoserver"
 geoserver_todos:
 - "http://docs.geoserver.org/latest/en/user/production/container.html#enable-the-marlin-rasterizer"
 - "http://docs.geoserver.org/latest/en/user/production/container.html#enable-cors"
 geoserver_java_opts: >
   -XX:SoftRefLRUPolicyMSPerMB=36000
-  -XX:+UseParallelGC
   -Djava.awt.headless=true
-  -XX:+UseConcMarkSweepGC
-  -Xmx756M -Xms128m
-  --XX:+UseParNewGC
   -XX:+UseG1GC
+  -Xmx756M -Xms128m
+#  --XX:+UseParNewGC
+#  -XX:+UseParallelGC
+#  -XX:+UseConcMarkSweepGC
 geoserver_packages:
   - gdal-bin
   - apache2-utils
@@ -134,7 +135,8 @@ geoserver_nginx_ssl_key: ""
 geoserver_nginx_loglevel: crit
 geoserver_nginx_doc_root: "/var/www"
 geoserver_force_ssl: true
-geoserver_host: 127.0.0.1
+geoserver_host: localhost
+geoserver_address: 127.0.0.1
 geoserver_port: 8080
 geoserver_sport: 8443
 geoserver_htpasswd: /etc/nginx/geoserver.htpasswd
@@ -146,3 +148,8 @@ geoserver_tomcat_users:
 - username: admin
   password: secret8p646D6UfvmhGUschanged
   roles: [tomcat]
+geoserver_marlin:
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-0.9.1-Unsafe-sun-java2d.jar"
+  checksum: "sha256:80c4325bfe2aa93df617bb763e3c090331ebb6badfd1caec778e8b8229aebcb3"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-0.9.1-Unsafe.jar"
+  checksum: "sha256:94794c9964472a1c296c2ba400dfd2e9b7479ba36e4d00d2f20a37ad7827c3dd"
