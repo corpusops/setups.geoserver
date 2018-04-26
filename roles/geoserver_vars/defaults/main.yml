@@ -12,6 +12,8 @@ geoserver_java_opts: >
   -Djava.awt.headless=true
   -XX:+UseG1GC
   -Xmx756M -Xms128m
+  -Xbootclasspath/p:"{{vars['geoserver_home']}}/WEB-INF/lib/marlin-{{vars['geoserver_marlin_ver']}}-Unsafe.jar"
+  -Dsun.java2d.renderer=org.marlin.pisces.PiscesRenderingEngine
 #  --XX:+UseParNewGC
 #  -XX:+UseParallelGC
 #  -XX:+UseConcMarkSweepGC
@@ -148,8 +150,9 @@ geoserver_tomcat_users:
 - username: admin
   password: secret8p646D6UfvmhGUschanged
   roles: [tomcat]
+geoserver_marlin_ver: 0.9.1
 geoserver_marlin:
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-0.9.1-Unsafe-sun-java2d.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{vars['geoserver_marlin_ver']}}-Unsafe-sun-java2d.jar"
   checksum: "sha256:80c4325bfe2aa93df617bb763e3c090331ebb6badfd1caec778e8b8229aebcb3"
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-0.9.1-Unsafe.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{vars['geoserver_marlin_ver']}}-Unsafe.jar"
   checksum: "sha256:94794c9964472a1c296c2ba400dfd2e9b7479ba36e4d00d2f20a37ad7827c3dd"
