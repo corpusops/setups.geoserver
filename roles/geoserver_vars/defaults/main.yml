@@ -1,18 +1,148 @@
 ---
+geoserver_cops_sub_namespaces:
+  nginx: {}
+geoserver_version: "2.13.0"
+geoserver_home: "/var/lib/{{vars['geoserver_tomcat']}}/webapps/geoserver"
+geoserver_todos:
+- "http://docs.geoserver.org/latest/en/user/production/container.html#enable-the-marlin-rasterizer"
+- "http://docs.geoserver.org/latest/en/user/production/container.html#enable-cors"
+geoserver_java_opts: >
+  -XX:SoftRefLRUPolicyMSPerMB=36000
+  -XX:+UseParallelGC
+  -Djava.awt.headless=true
+  -XX:+UseConcMarkSweepGC
+  -Xmx756M -Xms128m
+  --XX:+UseParNewGC
+  -XX:+UseG1GC
+geoserver_packages:
+  - gdal-bin
+  - apache2-utils
+  - python-passlib
+  - python3-passlib
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '14.04'|copsf_looseversion) -%}
+    libgdal1h
+    {%- elif (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '16.04'|copsf_looseversion) -%}
+    libgdal1i
+    {%- else -%}
+    libgdal20
+    {%- endif -%}"
+  - geoip-bin
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '14.04'|copsf_looseversion) -%}
+    libgeos-c1
+    {%- elif (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '16.04'|copsf_looseversion) -%}
+    libgeos-c1v5
+    {%- else -%}
+    libgeos-c1v5
+    {%- endif -%}"
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '14.04'|copsf_looseversion) -%}
+    libgeos-3.4.2
+    {%- elif (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '16.04'|copsf_looseversion) -%}
+    libgeos-3.5.0
+    {%- else -%}
+    libgeos-3.6.2
+    {%- endif -%}"
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <
+          '14.04'|copsf_looseversion) -%}
+    libgeoip
+    {%- else -%}
+    libgeoip1
+    {%- endif -%}"
+  - "{{geoserver_tomcat}}"
+geoserver_tomcat: "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '14.04'|copsf_looseversion) -%}
+    tomcat7
+    {%- elif (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '16.04'|copsf_looseversion) -%}
+    tomcat7
+    {%- else -%}
+    tomcat8
+    {%- endif -%}"
+geoserver_jce_headers:
+  Cookie:oraclelicense=accept-securebackup-cookie
+geoserver_jce: "http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip"
 geoserver_proot: "/srv/projects/vdc2wms/project"
 geoserver_java_home: "/usr/lib/jvm/java-8-oracle"
+geoserver_archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/geoserver-{{vars['geoserver_version']}}-war.zip"
+geoserver_archives:
+- filetest: []
+  app_path: "{{vars['geoserver_root']}}"
+  urls:
+    archive: "{{geoserver_archive}}"
+    archive_crc: "368f5a14ed7a151a6920800ab4af38ef1e574e51de41549951ad76c447269679"
+    verify_sha256: true
+geoserver_root: "{{vars['geoserver_proot']}}/geoserver-{{vars['geoserver_version']}}"
+geoserver_plugin_archives:
+- filetest: []
+  app_path: "{{vars['geoserver_root']}}"
+  urls:
+    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/extensions/geoserver-{{vars['geoserver_version']}}-gdal-plugin.zip"
+    archive_crc: "e77bc08af218eaca7dc3171be5b847f5431f0622ebafdb86002ab6a385dca717"
+    verify_sha256: true
 geoserver_jai:
 - filetest: [lib/jai_core.jar]
-  app_path: "{{geoserver_proot}}/jai"
-  archive: "jai-1_1_3-lib-linux-amd64.tar.gz"
+  app_path: "{{vars['geoserver_proot']}}/jai"
   urls:
     archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai-1_1_3-lib-linux-amd64.tar.gz"
     archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
     verify_sha256: true
 - filetest: [lib/jai_imageio.jar]
-  app_path: "{{geoserver_proot}}/jai"
-  archive: "jai_imageio-1_1-lib-linux-amd64.tar.gz"
+  app_path: "{{vars['geoserver_proot']}}/jai"
   urls:
     archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai_imageio-1_1-lib-linux-amd64.tar.gz"
     archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
     verify_sha256: true
+geoserver_name: geoserver
+geoserver_domain: "{{ansible_fqdn}}"
+geoserver_nginx_basename: "corpusops-{{vars['geoserver_name']}}"
+geoserver_nginx_upstream_name: "corpusops{{vars['geoserver_name']}}"
+geoserver_nginx_domain: "{{vars['geoserver_domain']}}"
+geoserver_nginx_server_aliases: ["www.{{vars['geoserver_domain']}}"]
+geoserver_nginx_redirect_aliases: false
+geoserver_nginx_port: "80"
+geoserver_nginx_ssl_port: "443"
+geoserver_nginx_content_template: "../templates/geoserver.conf"
+geoserver_nginx_top_template: "../templates/geoserver.top.conf"
+geoserver_nginx_is_default_server: true
+geoserver_nginx_htpasswd: "{{vars['geoserver_htpasswd']}}"
+geoserver_nginx_ssl_protected: false
+geoserver_nginx_ssl_cert: ""
+geoserver_nginx_ssl_key: ""
+geoserver_nginx_loglevel: crit
+geoserver_nginx_doc_root: "/var/www"
+geoserver_force_ssl: true
+geoserver_host: 127.0.0.1
+geoserver_port: 8080
+geoserver_sport: 8443
+geoserver_htpasswd: /etc/nginx/geoserver.htpasswd
+geoserver_http_users: []
+geoserver_default_vhost_is_default_server: false
+geoserver_tomcat_roles:
+- name: tomcat
+geoserver_tomcat_users:
+- username: admin
+  password: secret8p646D6UfvmhGUschanged
+  roles: [tomcat]

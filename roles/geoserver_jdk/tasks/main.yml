@@ -8,8 +8,9 @@
   tags: [jdk_install]
 - file:
     state: directory
-    path: "{{geoserver_vars.proot}}"
-  tags: [jdk_jai]
+    path: "{{item}}"
+  with_items: ["{{geoserver_vars.proot}}"]
+  tags: [jdk]
 - include_role: {name: corpusops.roles/install_archive}
   with_items: "{{geoserver_vars.jai}}"
   loop_control: {loop_var: _archive}
@@ -26,3 +27,39 @@
     cp -f lib/*so  "{{geoserver_vars.java_home}}/lib/ext"
   tags: [jdk_jai]
   changed_when: false
+- name: archives
+  get_url:
+    url: "{{geoserver_vars.jce}}"
+    checksum: "sha256:f3020a3922efd6626c2fff45695d527f34a8020e938a49292561f18ad1320b59"
+    headers: "{{geoserver_vars.jce_headers}}"
+    remote_src: true
+    dest: "{{geoserver_vars.proot}}/{{geoserver_vars.jce|copsf_basename}}"
+    mode: "0644"
+  tags: [jdk_jce]
+- name: "test if alreagy java unpacked"
+  stat: {path: "{{geoserver_vars.proot}}/UnlimitedJCEPolicyJDK8/local_policy.jar"}
+  failed_when: false
+  register: _geoserver_jce_t
+  tags: [jdk_jce]
+- name: unarchives
+  when: not _geoserver_jce_t.stat.exists
+  unarchive:
+    remote_src: true
+    keep_newer: true
+    src: "{{geoserver_vars.proot}}/{{geoserver_vars.jce|copsf_basename}}"
+    dest: "{{geoserver_vars.proot}}"
+  tags: [jdk_jce]
+- copy:
+    src: "{{geoserver_vars.proot}}/UnlimitedJCEPolicyJDK8/{{item}}"
+    dest: "{{geoserver_vars.java_home}}/jre/lib/security"
+    remote_src: true
+    force: true
+  with_items: [local_policy.jar, US_export_policy.jar]
+  tags: [jdk_jce]
+- copy:
+    src: "{{geoserver_vars.proot}}/UnlimitedJCEPolicyJDK8/{{item}}"
+    dest: "{{geoserver_vars.java_home}}/lib/security"
+    remote_src: true
+    force: true
+  with_items: [local_policy.jar, US_export_policy.jar]
+  tags: [jdk_jce]

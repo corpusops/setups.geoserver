@@ -1,0 +1,34 @@
+---
+- package:
+    cache_valid_time: "{{60*60}}"
+    update_cache: yes
+    name: "{{geoserver_vars.packages}}"
+    state: present
+  tags: [pkgs]
+- include_role: {name: corpusops.roles/install_archive}
+  with_items: "{{geoserver_vars.archives}}"
+  loop_control: {loop_var: _archive}
+- name: "test if alreagy geoserver unpacked"
+  stat: {path: "{{geoserver_vars.root}}/geoserver/index.html"}
+  failed_when: false
+  register: _geoserver_geoserver_t
+- file:
+    state: directory
+    path: "{{geoserver_vars.root}}/geoserver"
+- name: unarchives
+  when: not _geoserver_geoserver_t.stat.exists
+  unarchive:
+    remote_src: true
+    keep_newer: true
+    src: "{{geoserver_vars.root}}/geoserver.war"
+    dest: "{{geoserver_vars.root}}/geoserver"
+- include_role: {name: corpusops.roles/install_archive}
+  with_items: "{{geoserver_vars.plugin_archives}}"
+  loop_control: {loop_var: _archive}
+- shell: |
+    set -ex
+    t=geoserver/WEB-INF/lib/
+    cd "{{geoserver_vars.root}}"
+    rsync -av *jar $t/
+    rm -vf $t/jai_core-*jar $t/jai_imageio-*.jar $t/jai_codec-*.jar
+  changed_when: false

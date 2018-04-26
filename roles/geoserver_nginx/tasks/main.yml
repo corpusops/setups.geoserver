@@ -1,0 +1,28 @@
+---
+- shell: nginx -v
+  register: thisnginx
+  failed_when: false
+  changed_when: false
+- include_role: {name: corpusops.roles/services_http_nginx}
+  when: thisnginx.rc != 0 or (force_nginx|default(false))
+  tags: [nginx_install]
+- name: Generate APP virtualhost
+  include_role: {name: "corpusops.roles/nginx_vhost"}
+  vars: {_corpusops_nginx_vhost: "{{vars['geoserver_nginx']}}"}
+- name: Generate default virtualhost
+  include_role: {name: "corpusops.roles/nginx_default_vhost"}
+  vars:
+    _corpusops_nginx_default_vhost:
+      is_default_server: "{{
+          geoserver_vars.default_vhost_is_default_server}}"
+      check_config: false
+# Configure http users
+- htpasswd:
+    path: "{{geoserver_vars.htpasswd}}"
+    name: "{{item.user}}"
+    password: "{{item.password}}"
+    state: present
+  with_items: "{{geoserver_vars.http_users}}"
+  when: ["geoserver_vars.http_users is not none and
+          geoserver_vars.http_users|length > 0)"]
+- cops_service: {name: nginx, state: reloaded}

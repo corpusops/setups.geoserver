@@ -5,3 +5,9 @@
   - include_role: {name: geoserver_vars}
   - include_role: {name: geoserver_jdk}
     tags: [jdk]
+  - include_role: {name: geoserver_prereqs}
+    tags: [reqs]
+  - include_role: {name: geoserver_nginx}
+    tags: [nginx]
+  - include_role: {name: geoserver_tomcat}
+    tags: [tomcat]
