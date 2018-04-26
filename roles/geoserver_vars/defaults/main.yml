@@ -1,0 +1,18 @@
+---
+geoserver_proot: "/srv/projects/vdc2wms/project"
+geoserver_java_home: "/usr/lib/jvm/java-8-oracle"
+geoserver_jai:
+- filetest: [lib/jai_core.jar]
+  app_path: "{{geoserver_proot}}/jai"
+  archive: "jai-1_1_3-lib-linux-amd64.tar.gz"
+  urls:
+    archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai-1_1_3-lib-linux-amd64.tar.gz"
+    archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
+    verify_sha256: true
+- filetest: [lib/jai_imageio.jar]
+  app_path: "{{geoserver_proot}}/jai"
+  archive: "jai_imageio-1_1-lib-linux-amd64.tar.gz"
+  urls:
+    archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai_imageio-1_1-lib-linux-amd64.tar.gz"
+    archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
+    verify_sha256: true

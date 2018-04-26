@@ -1,0 +1,8 @@
+---
+- include_jinja_vars:
+    content: |
+      ---
+      {% set prefix = 'geoserver_' %}
+      {% set snamespaced, vars = vars | copsf_registry(prefix) %}
+      {{ snamespaced | to_json}}
+  no_log: "{{not (cops_vars_debug|default(false))}}"

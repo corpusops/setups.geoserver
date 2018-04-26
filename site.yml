@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - include_role: {name: corpusops.roles/vars}
+  - include_role: {name: geoserver_vars}
+  - include_role: {name: geoserver_jdk}
+    tags: [jdk]
