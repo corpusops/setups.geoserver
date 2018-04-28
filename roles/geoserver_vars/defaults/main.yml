@@ -37,6 +37,7 @@ geoserver_java_opts: >
   -Djava.library.path=/usr/lib/jni:/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
   -XX:SoftRefLRUPolicyMSPerMB=36000
   -Djava.awt.headless=true
+  -DGEOSERVER_DATA_DIR={{geoserver_data}}
   -XX:+UseG1GC
   -Xmx2048M
   -Xms256m
