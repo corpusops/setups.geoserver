@@ -34,7 +34,7 @@ geoserver_todos:
 - "http://docs.geoserver.org/latest/en/user/production/container.html#enable-cors"
 geoserver_java_opts: >
   -Dfile.encoding=UTF-8
-  -Djava.library.path=/usr/lib/jni:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+  -Djava.library.path=/usr/lib/jni:/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
   -XX:SoftRefLRUPolicyMSPerMB=36000
   -Djava.awt.headless=true
   -XX:+UseG1GC

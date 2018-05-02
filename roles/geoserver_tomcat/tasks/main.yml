@@ -63,7 +63,7 @@
     cd "{{geoserver_vars.tomcat_path}}"
     chmod 751 .
     find temp/ work/ logs/ bin lib conf temp webapps|xargs chown {{geoserver_vars.tomcat}}:{{geoserver_vars.tomcat}}
-	changed_when: false
+  changed_when: false
 - cops_service:
     daemon_reload: true
     name: "{{geoserver_vars.tomcat_service}}"

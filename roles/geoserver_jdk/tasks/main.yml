@@ -21,10 +21,10 @@
     if [ ! -e  "{{geoserver_vars.java_home}}/lib/ext" ];then
       mkdir -pv "{{geoserver_vars.java_home}}/lib/ext"
     fi
-    cp -f lib/*jar "{{geoserver_vars.java_home}}/jre/lib/amd64"
-    cp -f lib/*jar "{{geoserver_vars.java_home}}/lib/amd64"
-    cp -f lib/*so  "{{geoserver_vars.java_home}}/jre/lib/ext"
-    cp -f lib/*so  "{{geoserver_vars.java_home}}/lib/ext"
+    cp -f lib/*so "{{geoserver_vars.java_home}}/jre/lib/amd64"
+    cp -f lib/*so "{{geoserver_vars.java_home}}/lib/amd64"
+    cp -f lib/*jar  "{{geoserver_vars.java_home}}/jre/lib/ext"
+    cp -f lib/*jar  "{{geoserver_vars.java_home}}/lib/ext"
   tags: [jdk_jai]
   changed_when: false
 - name: archives
