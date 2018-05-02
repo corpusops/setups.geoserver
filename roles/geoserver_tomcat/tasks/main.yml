@@ -1,4 +1,10 @@
 ---
+- shell:
+    set -ex
+    res=$(dirname $(dpkg -L gdal-data|grep wkt|head -n1))
+    if [ "x$res" = "x" ];then res="{{geoserver_vars.gdal_data}}";fi
+    echo $res
+  register: _geoserver_gdal
 - block:
   - register: cops_configs_filesl
     debug:
@@ -20,21 +26,31 @@
          'owner': "root",
          'group': "root",
          'template': '../templates/webapp/WEB-INF/web.xml'},
-        {'name': "/etc/{0}/server.xml".format(geoserver_vars.tomcat),
+        {'name': "{0}/conf/server.xml".format(geoserver_vars.tomcat_path),
+         'mode': "0640",
+         'owner': "root",
+         'group': geoserver_vars.tomcat,
+         'template': '../templates/tomcat/server.xml'},
+        {'name': "{0}/conf/tomcat-users.xml".format(geoserver_vars.tomcat_path),
+         'mode': "0640",
+         'owner': "root",
+         'group': geoserver_vars.tomcat,
+         'template': '../templates/tomcat/tomcat-users.xml'},
+        {'name': "/etc/systemd/system/{0}.service".format(geoserver_vars.tomcat_service),
+         'mode': "0755",
+         'owner': "root",
+         'group': "root",
+         'template': '../templates/etc/systemd/system/tomcat.service'},
+        {'name': "/etc/logrotate.d/{0}".format(geoserver_vars.tomcat_service),
          'mode': "0644",
          'owner': "root",
          'group': "root",
-         'template': '../templates/etc/tomcat/server.xml'},
-        {'name': "/etc/{0}/tomcat-users.xml".format(geoserver_vars.tomcat),
+         'template': '../templates/etc/logrotate.d/tomcat'},
+        {'name': "/etc/default/{0}".format(geoserver_vars.tomcat_service),
          'mode': "0644",
          'owner': "root",
          'group': "root",
-         'template': '../templates/etc/tomcat/tomcat-users.xml'},
-        {'name': "/etc/default/{0}".format(geoserver_vars.tomcat),
-         'mode': "0644",
-         'owner': "root",
-         'group': "root",
-         'template': '../templates/default/tomcat'},
+         'template': '../templates/etc/default/tomcat'},
         ] %}
         {{ res | to_json }}
   - include_role: {name: corpusops.roles/configs, private: true}
@@ -42,7 +58,14 @@
       cops_configs_copys: []
       cops_configs_files: "{{cops_configs_filesl.msg}}"
       cops_configs_templates: "{{cops_configs_templatesl.msg}}"
+- shell: |-
+    set -ex
+    cd "{{geoserver_vars.tomcat_path}}"
+    chmod 751 .
+    find temp/ work/ logs/ bin lib conf temp webapps|xargs chown {{geoserver_vars.tomcat}}:{{geoserver_vars.tomcat}}
+	changed_when: false
 - cops_service:
-    name: "{{geoserver_vars.tomcat}}"
+    daemon_reload: true
+    name: "{{geoserver_vars.tomcat_service}}"
     state: restarted
-
+    enabled: true

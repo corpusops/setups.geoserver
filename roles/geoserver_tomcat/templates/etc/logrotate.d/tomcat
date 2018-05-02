@@ -1,0 +1,9 @@
+# {% set d = geoserver_vars %}
+{{d.tomcat_path}}/logs/catalina.out {
+  copytruncate
+  weekly
+  rotate 52
+  compress
+  missingok
+  create 640 tomcat8 adm
+}

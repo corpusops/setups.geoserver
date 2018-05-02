@@ -1,0 +1,18 @@
+[Unit]
+# {%  set d = geoserver_vars %}
+Description=Tomcat - {{d.name}}
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User={{d.tomcat}}
+Group={{d.tomcat}}
+WorkingDirectory={{d.tomcat_path}}
+ExecStart=/bin/bash -c "set -x && . /etc/default/{{d.tomcat_service}} && exec {{d.tomcat_path}}/bin/startup.sh"
+ExecStop=/bin/bash -c "set -x && . /etc/default/{{d.tomcat_service}} && exec {{d.tomcat_path}}/bin/shutdown.sh"
+
+#RestartSec=10
+#Restart=always
+
+[Install]
+WantedBy=multi-user.target

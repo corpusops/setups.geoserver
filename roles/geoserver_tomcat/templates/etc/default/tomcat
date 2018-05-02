@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
+
 # {{ ansible_managed}}
 
+if [ "x${LD_LIBRARY_PATH-}" != "x" ];then
+    export LD_LIBRARY_PATH=":${LD_LIBRARY_PATH}"
+fi
+export LD_LIBRARY_PATH="/usr/lib/jni${LD_LIBRARY_PATH}"
 
+GDAL_DATA="{{_geoserver_gdal.stdout.strip()}}"
 GEOSERVER_HOME="{{geoserver_vars.home}}"
 GEOSERVER_DATA_DIR="{{geoserver_vars.data}}"
 
@@ -26,6 +32,7 @@ JAVA_HOME="{{geoserver_vars.java_home}}"
 # exactly one CPU chip that contains one or two cores, you should also add
 # the "-XX:+CMSIncrementalMode" option.
 JAVA_OPTS="{{geoserver_vars.java_opts.strip()}}"
+CATALINA_OPTS="$JAVA_OPTS"
 
 # To enable remote debugging uncomment the following line.
 # You will then be able to use a java debugger on port 8000.
@@ -51,6 +58,7 @@ JAVA_OPTS="{{geoserver_vars.java_opts.strip()}}"
 # do not need authbind.  It is used for binding Tomcat to lower port numbers.
 # (yes/no, default: no)
 #AUTHBIND=no
-export GEOSERVER_HOME
-export JAVA_OPTS
-export JAVA_HOME
+export TOMCAT8_GROUP TOMCAT8_USER
+export GDAL_DATA
+export GEOSERVER_HOME GEOSERVER_DATA_DIR
+export JAVA_OPTS JAVA_HOME CATALINA_OPTS
