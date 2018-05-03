@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: geoserver_servers
   tasks:
   - include_role: {name: corpusops.roles/vars}
   - include_role: {name: geoserver_vars}

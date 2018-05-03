@@ -32,6 +32,8 @@ geoserver_home: "{{geoserver_tomcat_path}}/webapps/geoserver"
 geoserver_todos:
 - "http://docs.geoserver.org/latest/en/user/production/container.html#enable-the-marlin-rasterizer"
 - "http://docs.geoserver.org/latest/en/user/production/container.html#enable-cors"
+geoserver_java_xmx: 2048M
+geoserver_java_xms: 256m
 geoserver_java_opts: >
   -Dfile.encoding=UTF-8
   -Djava.library.path=/usr/lib/jni:/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
@@ -39,8 +41,8 @@ geoserver_java_opts: >
   -Djava.awt.headless=true
   -DGEOSERVER_DATA_DIR={{geoserver_data}}
   -XX:+UseG1GC
-  -Xmx2048M
-  -Xms256m
+  -Xmx{{geoserver_java_xmx}}
+  -Xms{{geoserver_java_xms}}
   -Xbootclasspath/p:"{{geoserver_home}}/WEB-INF/lib/marlin-{{geoserver_marlin_ver}}-Unsafe.jar"
   -Dsun.java2d.renderer=org.marlin.pisces.PiscesRenderingEngine
 #  --XX:+UseParNewGC
