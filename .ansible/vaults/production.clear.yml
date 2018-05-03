@@ -1,0 +1,6 @@
+---
+geoserver_domain: "{{ansible_fqdn}}"
+geoserver_nginx_domain: "{{vars['geoserver_domain']}}"
+geoserver_nginx_server_aliases: ["www.{{vars['geoserver_domain']}}"] 
+geoserver_java_xmx: 2048M
+geoserver_java_xms: 256m
