@@ -1,23 +1,12 @@
 localhost ansible_connection=local
-staging-myapp.foo.net sudo_flags=-HE ansible_port=22 ansible_user=root ansible_ssh_common_args="-i {{cops_deploy_ssh_key_paths['staging'].path}}"
-mydbserver.foo.net sudo_flags=-HE ansible_port=22 ansible_user=root ansible_ssh_common_args="-i {{cops_deploy_ssh_key_paths['staging'].path}}"
+production-myapp.foo.net sudo_flags=-HE ansible_port=22 ansible_user=root ansible_ssh_common_args="-i {{cops_deploy_ssh_key_paths['production'].path}}"
 
-[drupal_servers]
-staging-myapp.foo.net
+[geoserver_servers]
+production-myapp.foo.net
 
 [app_servers]
 [app_servers:children]
-drupal_servers
-
-[postgresql_servers]
-mydbserver.foo.net
-
-[db_backup_servers]
-mydbserver.foo.net
-
-[db_servers]
-[db_servers:children]
-postgresql_servers
+geoserver_servers
 
 [controller]
 localhost
