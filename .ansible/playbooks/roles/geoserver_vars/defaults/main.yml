@@ -12,13 +12,16 @@ geoserver_tomcat_sha: "{{geoserver_shas['tomcat-{0}'.format(geoserver_tomcat_ver
 geoserver_version: "2.12.3"
 geoserver_sha: "{{geoserver_shas[geoserver_version].dist}}"
 geoserver_plugin_gdal_sha: "{{geoserver_shas[geoserver_version].gdal}}"
+geoserver_plugin_pyramid_sha: "{{geoserver_shas[geoserver_version].pyramid}}"
 geoserver_shas:
   2.12.3:
     dist: eba9ee162f112fc81bbcf71103156e4ea9e4ecfaf5812683c121af1e6055f476
     gdal: d1b9e1d60a928637fdb65d1f036493e9ecc8816af57cb92a61cedad83dcce468
+    pyramid: e6b02b751322dbb511c375c62d007d633bf321a1aae22a100dfc59159cff22ab
   2.13.0:
     dist: 368f5a14ed7a151a6920800ab4af38ef1e574e51de41549951ad76c447269679
     gdal: e77bc08af218eaca7dc3171be5b847f5431f0622ebafdb86002ab6a385dca717
+    pyramid: 76aec9d6fb3fc1c9b70d21bc30a85a87edfe7eaac899bb140efbcef61378ffeb
   tomcat-8.5.30: ad2dc76d583397635a8c4bf765636bab283366af2f48b6d82107a5af29139d8c
   marlin-0.9.1:
     sun: "sha256:80c4325bfe2aa93df617bb763e3c090331ebb6badfd1caec778e8b8229aebcb3"
@@ -143,6 +146,12 @@ geoserver_archives:
     verify_sha256: true
 geoserver_root: "{{vars['geoserver_proot']}}/geoserver-{{vars['geoserver_version']}}"
 geoserver_plugin_archives:
+- filetest: []
+  app_path: "{{vars['geoserver_root']}}"
+  urls:
+    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/extensions/geoserver-{{vars['geoserver_version']}}-pyramid-plugin.zip"
+    archive_crc: "{{geoserver_plugin_pyramid_sha}}"
+    verify_sha256: true
 - filetest: []
   app_path: "{{vars['geoserver_root']}}"
   urls:
