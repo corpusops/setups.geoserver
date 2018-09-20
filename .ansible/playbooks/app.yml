@@ -3,6 +3,7 @@
   roles: [{role: corpusops.roles/vars}]
   tasks:
   - include_role: {name: geoserver_vars}
+    tags: [vars]
   - include_role: {name: geoserver_jdk}
     tags: [jdk]
   - include_role: {name: geoserver_prereqs}

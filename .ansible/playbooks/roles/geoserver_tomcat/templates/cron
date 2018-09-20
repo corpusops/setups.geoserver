@@ -1,0 +1,2 @@
+MAILTO=""
+{{geoserver_vars.restart_periodicity}} root {{geoserver_vars.data}}/restart_tomcat.sh

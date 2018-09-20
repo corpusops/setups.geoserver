@@ -3,6 +3,7 @@ geoserver_prefix: "/srv/projects/geoserver"
 geoserver_proxy_timeout: "1200"
 geoserver_proot: "{{geoserver_prefix}}/project"
 geoserver_data: "{{geoserver_prefix}}/data/geoserver"
+geoserver_restart_periodicity: "*/3 * * * *"
 geoserver_name: geoserver
 geoserver_cops_sub_namespaces:
   nginx: {}
