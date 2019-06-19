@@ -10,6 +10,7 @@ Group={{d.tomcat}}
 WorkingDirectory={{d.tomcat_path}}
 ExecStart=/bin/bash -c "set -x && . /etc/default/{{d.tomcat_service}} && exec {{d.tomcat_path}}/bin/startup.sh"
 ExecStop=/bin/bash -c "set -x && . /etc/default/{{d.tomcat_service}} && exec {{d.tomcat_path}}/bin/shutdown.sh"
+LimitNOFILE={{d.nofile}}
 
 #RestartSec=10
 #Restart=always

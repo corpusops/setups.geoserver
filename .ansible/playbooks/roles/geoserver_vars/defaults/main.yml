@@ -205,3 +205,4 @@ geoserver_tomcat_users:
   password: secret8p646D6UfvmhGUschanged
   roles: [tomcat]
 geoserver_tomcat_service: "tomcat-{{vars['geoserver_name']}}"
+geoserver_nofile: 49152
