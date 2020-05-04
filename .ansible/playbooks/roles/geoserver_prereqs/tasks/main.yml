@@ -15,7 +15,7 @@
     state: present
   tags: [pkgs]
 - include_role: {name: corpusops.roles/install_archive}
-  with_items: "{{geoserver_vars.tomcat_bin}}"
+  loop: "{{geoserver_vars.tomcat_bin}}"
   loop_control: {loop_var: _archive}
 - file:
     state: link
@@ -28,9 +28,9 @@
 - file:
     state: absent
     path: "{{geoserver_vars.tomcat_path}}/webapps/{{item}}"
-  with_items: "{{geoserver_vars.tomcat_deactivated_apps}}"
+  loop: "{{geoserver_vars.tomcat_deactivated_apps}}"
 - include_role: {name: corpusops.roles/install_archive}
-  with_items: "{{geoserver_vars.archives}}"
+  loop: "{{geoserver_vars.archives}}"
   loop_control: {loop_var: _archive}
 - name: "test if alreagy geoserver unpacked"
   stat: {path: "{{geoserver_vars.root}}/geoserver/index.html"}
@@ -47,7 +47,7 @@
     src: "{{geoserver_vars.root}}/geoserver.war"
     dest: "{{geoserver_vars.root}}/geoserver"
 - include_role: {name: corpusops.roles/install_archive}
-  with_items: "{{geoserver_vars.plugin_archives}}"
+  loop: "{{geoserver_vars.plugin_archives}}"
   loop_control: {loop_var: _archive}
 - name: marlin
   get_url:
@@ -57,7 +57,7 @@
     dest: "{{geoserver_vars.root}}"
     mode: "0644"
   tags: [marlin1]
-  with_items: "{{geoserver_vars.marlin}}"
+  loop: "{{geoserver_vars.marlin}}"
 - shell: |
     set -ex
     t=geoserver/WEB-INF/lib/

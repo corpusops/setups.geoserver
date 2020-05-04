@@ -29,9 +29,9 @@ geoserver_shas:
     dist: "sha256:94794c9964472a1c296c2ba400dfd2e9b7479ba36e4d00d2f20a37ad7827c3dd"
 geoserver_marlin_ver: 0.9.1
 geoserver_marlin:
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{vars['geoserver_marlin_ver']}}-Unsafe-sun-java2d.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{geoserver_marlin_ver}}-Unsafe-sun-java2d.jar"
   checksum: "{{geoserver_shas['marlin-{0}'.format(geoserver_marlin_ver)].sun}}"
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{vars['geoserver_marlin_ver']}}-Unsafe.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{geoserver_marlin_ver}}-Unsafe.jar"
   checksum: "{{geoserver_shas['marlin-{0}'.format(geoserver_marlin_ver)].dist}}"
 geoserver_home: "{{geoserver_tomcat_path}}/webapps/geoserver"
 geoserver_todos:
@@ -126,65 +126,65 @@ geoserver_jce_headers:
   Cookie:oraclelicense=accept-securebackup-cookie
 geoserver_jce: "http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip"
 geoserver_java_home: "/usr/lib/jvm/java-8-oracle"
-geoserver_archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/geoserver-{{vars['geoserver_version']}}-war.zip"
+geoserver_archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{geoserver_version}}/geoserver-{{geoserver_version}}-war.zip"
 geoserver_tomcat_vpath: "{{geoserver_proot}}/apache-tomcat-{{geoserver_name}}-{{geoserver_tomcat_ver}}"
 geoserver_tomcat_path: "{{geoserver_proot}}/apache-tomcat-{{geoserver_name}}"
 geoserver_tomcat_loglnk: "/var/log/tomcat-{{geoserver_name}}"
 geoserver_tomcat_deactivated_apps: [examples, doc, docs, "host-manager", manager]
 geoserver_tomcat_bin:
 - filetest: [conf, webapps]
-  app_path: "{{vars['geoserver_tomcat_vpath']}}"
+  app_path: "{{geoserver_tomcat_vpath}}"
   urls:
     archive: "http://apache.mirrors.ovh.net/ftp.apache.org/dist/tomcat/tomcat-8/v{{geoserver_tomcat_ver}}/bin/apache-tomcat-{{geoserver_tomcat_ver}}.tar.gz"
     checksum: "{{geoserver_tomcat_sha}}"
     verify_sha256: true
 geoserver_archives:
 - filetest: []
-  app_path: "{{vars['geoserver_root']}}"
+  app_path: "{{geoserver_root}}"
   urls:
     archive: "{{geoserver_archive}}"
     archive_crc: "{{geoserver_sha}}"
     verify_sha256: true
-geoserver_root: "{{vars['geoserver_proot']}}/geoserver-{{vars['geoserver_version']}}"
+geoserver_root: "{{geoserver_proot}}/geoserver-{{geoserver_version}}"
 geoserver_plugin_archives:
 - filetest: []
-  app_path: "{{vars['geoserver_root']}}"
+  app_path: "{{geoserver_root}}"
   urls:
-    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/extensions/geoserver-{{vars['geoserver_version']}}-pyramid-plugin.zip"
+    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{geoserver_version}}/extensions/geoserver-{{geoserver_version}}-pyramid-plugin.zip"
     archive_crc: "{{geoserver_plugin_pyramid_sha}}"
     verify_sha256: true
 - filetest: []
-  app_path: "{{vars['geoserver_root']}}"
+  app_path: "{{geoserver_root}}"
   urls:
-    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{vars['geoserver_version']}}/extensions/geoserver-{{vars['geoserver_version']}}-gdal-plugin.zip"
+    archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{geoserver_version}}/extensions/geoserver-{{geoserver_version}}-gdal-plugin.zip"
     archive_crc: "{{geoserver_plugin_gdal_sha}}"
     verify_sha256: true
 geoserver_gdal_data: /usr/share/gdal/2.2
 geoserver_jai:
 - filetest: [lib/jai_core.jar]
-  app_path: "{{vars['geoserver_proot']}}/jai"
+  app_path: "{{geoserver_proot}}/jai"
   urls:
     archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai-1_1_3-lib-linux-amd64.tar.gz"
     archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
     verify_sha256: true
 - filetest: [lib/jai_imageio.jar]
-  app_path: "{{vars['geoserver_proot']}}/jai"
+  app_path: "{{geoserver_proot}}/jai"
   urls:
     archive: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai_imageio-1_1-lib-linux-amd64.tar.gz"
     archive_crc: "https://github.com/corpusops/corpusops.bootstrap/releases/download/files/jai.shas"
     verify_sha256: true
 geoserver_domain: "{{ansible_fqdn}}"
-geoserver_nginx_basename: "corpusops-{{vars['geoserver_name']}}"
-geoserver_nginx_upstream_name: "corpusops{{vars['geoserver_name']}}"
-geoserver_nginx_domain: "{{vars['geoserver_domain']}}"
-geoserver_nginx_server_aliases: ["www.{{vars['geoserver_domain']}}"]
+geoserver_nginx_basename: "corpusops-{{geoserver_name}}"
+geoserver_nginx_upstream_name: "corpusops{{geoserver_name}}"
+geoserver_nginx_domain: "{{geoserver_domain}}"
+geoserver_nginx_server_aliases: ["www.{{geoserver_domain}}"]
 geoserver_nginx_redirect_aliases: false
 geoserver_nginx_port: "80"
 geoserver_nginx_ssl_port: "443"
 geoserver_nginx_content_template: "../templates/geoserver.conf"
 geoserver_nginx_top_template: "../templates/geoserver.top.conf"
 geoserver_nginx_is_default_server: true
-geoserver_nginx_htpasswd: "{{vars['geoserver_htpasswd']}}"
+geoserver_nginx_htpasswd: "{{geoserver_htpasswd}}"
 geoserver_nginx_ssl_protected: false
 geoserver_nginx_ssl_cert: ""
 geoserver_nginx_ssl_key: ""
@@ -204,5 +204,5 @@ geoserver_tomcat_users:
 - username: admin
   password: secret8p646D6UfvmhGUschanged
   roles: [tomcat]
-geoserver_tomcat_service: "tomcat-{{vars['geoserver_name']}}"
+geoserver_tomcat_service: "tomcat-{{geoserver_name}}"
 geoserver_nofile: 49152

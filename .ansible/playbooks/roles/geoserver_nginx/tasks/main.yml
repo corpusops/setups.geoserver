@@ -8,7 +8,7 @@
   tags: [nginx_install]
 - name: Generate APP virtualhost
   include_role: {name: "corpusops.roles/nginx_vhost"}
-  vars: {_corpusops_nginx_vhost: "{{vars['geoserver_nginx']}}"}
+  vars: {_corpusops_nginx_vhost: "{{geoserver_nginx}}"}
 - name: Generate default virtualhost
   include_role: {name: "corpusops.roles/nginx_default_vhost"}
   vars:
@@ -22,7 +22,7 @@
     name: "{{item.user}}"
     password: "{{item.password}}"
     state: present
-  with_items: "{{geoserver_vars.http_users}}"
+  loop: "{{geoserver_vars.http_users}}"
   when: ["geoserver_vars.http_users is not none and
           geoserver_vars.http_users|length > 0)"]
 - cops_service: {name: nginx, state: reloaded}

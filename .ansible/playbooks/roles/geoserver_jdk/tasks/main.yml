@@ -9,10 +9,10 @@
 - file:
     state: directory
     path: "{{item}}"
-  with_items: ["{{geoserver_vars.proot}}"]
+  loop: ["{{geoserver_vars.proot}}"]
   tags: [jdk]
 - include_role: {name: corpusops.roles/install_archive}
-  with_items: "{{geoserver_vars.jai}}"
+  loop: "{{geoserver_vars.jai}}"
   loop_control: {loop_var: _archive}
   tags: [jdk_jai]
 - shell: |
@@ -54,12 +54,12 @@
     dest: "{{geoserver_vars.java_home}}/jre/lib/security"
     remote_src: true
     force: true
-  with_items: [local_policy.jar, US_export_policy.jar]
+  loop: [local_policy.jar, US_export_policy.jar]
   tags: [jdk_jce]
 - copy:
     src: "{{geoserver_vars.proot}}/UnlimitedJCEPolicyJDK8/{{item}}"
     dest: "{{geoserver_vars.java_home}}/lib/security"
     remote_src: true
     force: true
-  with_items: [local_policy.jar, US_export_policy.jar]
+  loop: [local_policy.jar, US_export_policy.jar]
   tags: [jdk_jce]
