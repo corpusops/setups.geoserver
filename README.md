@@ -1,4 +1,4 @@
 # geoserver ansible based deployment
 
-- For now, with java8, Install geoserver from xenial because of [thisbug](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=895866)
-    
+- For now, with java8, Install geoserver with the pyramid plugin and additonal requirement
+

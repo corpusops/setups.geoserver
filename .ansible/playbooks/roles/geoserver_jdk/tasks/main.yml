@@ -30,9 +30,8 @@
 - name: archives
   get_url:
     url: "{{geoserver_vars.jce}}"
-    checksum: "sha256:f3020a3922efd6626c2fff45695d527f34a8020e938a49292561f18ad1320b59"
+    checksum: "sha256:{{geoserver_shas['jce-'+geoserver_jce_version].dist}}"
     headers: "{{geoserver_vars.jce_headers}}"
-    remote_src: true
     dest: "{{geoserver_vars.proot}}/{{geoserver_vars.jce|copsf_basename}}"
     mode: "0644"
   tags: [jdk_jce]

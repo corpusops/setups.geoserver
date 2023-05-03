@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+readlinkf() {
+    if ( uname | egrep -iq "linux|darwin|bsd" );then
+        if ( which greadlink 2>&1 >/dev/null );then
+            greadlink -f "$@"
+        elif ( which perl 2>&1 >/dev/null );then
+            perl -MCwd -le 'print Cwd::abs_path shift' "$@"
+        elif ( which python 2>&1 >/dev/null );then
+            python -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$@"
+        fi
+    else
+        readlink -f "$@"
+    fi
+}
 set -e
 log() { echo "$@" >&2; }
 vv() { log "($COPS_CWD) $@";"$@"; }
@@ -50,7 +63,7 @@ if [[ -z $NO_SHARED_COPS ]] && ! ( test_corpusops_present );then
         fi
         ln -sf "$COPS_ROOT" "$LOCAL_COPS_ROOT"
     elif [ -h local/corpusops.bootstrap ];then
-        log "Reuse corpusops from: $(readlink -f "$LOCAL_COPS_ROOT")"
+        log "Reuse corpusops from: $(readlinkf "$LOCAL_COPS_ROOT")"
     elif [ -d local/corpusops.bootstrap ];then
         log "Local corpusops copy in: local/corpusops.bootstrap"
     fi
@@ -69,7 +82,7 @@ else
     else
         addmsg=
         if [ -h $LOCAL_COPS_ROOT ];then
-            addmsg="${add} -> $(readlink -f $LOCAL_COPS_ROOT)"
+            addmsg="${add} -> $(readlinkf $LOCAL_COPS_ROOT)"
         fi
         log "corpusops.bootstrap already there in $LOCAL_COPS_ROOT${addmsg}"
     fi

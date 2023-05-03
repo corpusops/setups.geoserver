@@ -7,14 +7,22 @@ geoserver_restart_periodicity: "*/3 * * * *"
 geoserver_name: geoserver
 geoserver_cops_sub_namespaces:
   nginx: {}
-geoserver_tomcat_ver: 8.5.30
+geoserver_tomcat_10_ver: "10.0.14"
+geoserver_tomcat_8_ver: "8.5.30"
+geoserver_tomcat_9_ver: "9.0.56"
+geoserver_tomcat_ver: "{{geoserver_tomcat_9_ver}}"
 geoserver_tomcat_sha: "{{geoserver_shas['tomcat-{0}'.format(geoserver_tomcat_ver)]}}"
 # geoserver_version: "2.13.0"
-geoserver_version: "2.12.3"
+geoserver_old_version: "2.12.3"
+geoserver_version: "2.20.1"
+geoserver_jce_version: "8"
 geoserver_sha: "{{geoserver_shas[geoserver_version].dist}}"
 geoserver_plugin_gdal_sha: "{{geoserver_shas[geoserver_version].gdal}}"
 geoserver_plugin_pyramid_sha: "{{geoserver_shas[geoserver_version].pyramid}}"
+geoserver_jce: "http://download.oracle.com/otn-pub/java/jce/{{geoserver_jce_version}}/jce_policy-{{geoserver_jce_version}}.zip"
 geoserver_shas:
+  jce-8:
+    dist: f3020a3922efd6626c2fff45695d527f34a8020e938a49292561f18ad1320b59
   2.12.3:
     dist: eba9ee162f112fc81bbcf71103156e4ea9e4ecfaf5812683c121af1e6055f476
     gdal: d1b9e1d60a928637fdb65d1f036493e9ecc8816af57cb92a61cedad83dcce468
@@ -23,15 +31,25 @@ geoserver_shas:
     dist: 368f5a14ed7a151a6920800ab4af38ef1e574e51de41549951ad76c447269679
     gdal: e77bc08af218eaca7dc3171be5b847f5431f0622ebafdb86002ab6a385dca717
     pyramid: 76aec9d6fb3fc1c9b70d21bc30a85a87edfe7eaac899bb140efbcef61378ffeb
+  2.20.1:
+    dist: 225c2f1839c0558f1e7c528d389404c0f1b5e8dd89e63e61f4707fd1265b8516
+    gdal: 1d4fef1500536f69ed687c5c6f841c84ff32370a4f35708d5db9f3a7b928083e
+    pyramid: 80d6bede3398d406bad60ddef49a7d9184debe5ad638491c83da16a01bbe72fb
   tomcat-8.5.30: ad2dc76d583397635a8c4bf765636bab283366af2f48b6d82107a5af29139d8c
+  tomcat-10.0.14: d64b9a538d645a7d43cef5143983dd010dc99e49151a8c1c21ee75cd82dadbea
+  tomcat-9.0.56: 960ce89fa93099a412f7d1b828d6d97465d5e11500247e9c58a637fded523e0d
   marlin-0.9.1:
     sun: "sha256:80c4325bfe2aa93df617bb763e3c090331ebb6badfd1caec778e8b8229aebcb3"
     dist: "sha256:94794c9964472a1c296c2ba400dfd2e9b7479ba36e4d00d2f20a37ad7827c3dd"
-geoserver_marlin_ver: 0.9.1
+  marlin-0.9.4.5:
+    sun: "sha256:a3c85feb2d732a36cbb833e4e0c817853b1dd5b699770c89211c5beeb520b715"
+    dist: "sha256:b560b2a7e35709ce7508b12466adbfb081966e0f725c951b2b1f9bea96142820"
+geoserver_marlin_old_ver: 0.9.1
+geoserver_marlin_ver: 0.9.4.5
 geoserver_marlin:
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{geoserver_marlin_ver}}-Unsafe-sun-java2d.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v{{geoserver_marlin_ver.replace('.', '_')}}/marlin-{{geoserver_marlin_ver}}-Unsafe-sun-java2d.jar"
   checksum: "{{geoserver_shas['marlin-{0}'.format(geoserver_marlin_ver)].sun}}"
-- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v0_9_1/marlin-{{geoserver_marlin_ver}}-Unsafe.jar"
+- url: "https://github.com/bourgesl/marlin-renderer/releases/download/v{{geoserver_marlin_ver.replace('.', '_')}}/marlin-{{geoserver_marlin_ver}}-Unsafe.jar"
   checksum: "{{geoserver_shas['marlin-{0}'.format(geoserver_marlin_ver)].dist}}"
 geoserver_home: "{{geoserver_tomcat_path}}/webapps/geoserver"
 geoserver_todos:
@@ -40,6 +58,7 @@ geoserver_todos:
 geoserver_java_xmx: 2048M
 geoserver_java_xms: 256m
 geoserver_java_opts: >
+  -Dlog4j2.formatMsgNoLookups=true
   -Dfile.encoding=UTF-8
   -Djava.library.path=/usr/lib/jni:/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
   -XX:SoftRefLRUPolicyMSPerMB=36000
@@ -124,18 +143,18 @@ geoserver_tomcat: "{%- if (
     {%- endif -%}"
 geoserver_jce_headers:
   Cookie:oraclelicense=accept-securebackup-cookie
-geoserver_jce: "http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip"
 geoserver_java_home: "/usr/lib/jvm/java-8-oracle"
 geoserver_archive: "https://downloads.sourceforge.net/project/geoserver/GeoServer/{{geoserver_version}}/geoserver-{{geoserver_version}}-war.zip"
 geoserver_tomcat_vpath: "{{geoserver_proot}}/apache-tomcat-{{geoserver_name}}-{{geoserver_tomcat_ver}}"
 geoserver_tomcat_path: "{{geoserver_proot}}/apache-tomcat-{{geoserver_name}}"
+geoserver_tomcat_mirror: "http://apache.mirrors.ovh.net/ftp.apache.org/dist/tomcat"
 geoserver_tomcat_loglnk: "/var/log/tomcat-{{geoserver_name}}"
 geoserver_tomcat_deactivated_apps: [examples, doc, docs, "host-manager", manager]
 geoserver_tomcat_bin:
 - filetest: [conf, webapps]
   app_path: "{{geoserver_tomcat_vpath}}"
   urls:
-    archive: "http://apache.mirrors.ovh.net/ftp.apache.org/dist/tomcat/tomcat-8/v{{geoserver_tomcat_ver}}/bin/apache-tomcat-{{geoserver_tomcat_ver}}.tar.gz"
+    archive: "{{geoserver_tomcat_mirror}}/tomcat-{{geoserver_tomcat_ver.split('.')[0]}}/v{{geoserver_tomcat_ver}}/bin/apache-tomcat-{{geoserver_tomcat_ver}}.tar.gz"
     checksum: "{{geoserver_tomcat_sha}}"
     verify_sha256: true
 geoserver_archives:
@@ -188,6 +207,7 @@ geoserver_nginx_htpasswd: "{{geoserver_htpasswd}}"
 geoserver_nginx_ssl_protected: false
 geoserver_nginx_ssl_cert: ""
 geoserver_nginx_ssl_key: ""
+geoserver_tomcat_ajp_secret: "secretlE5zK2eQ6xT0tJ1k"
 geoserver_nginx_loglevel: crit
 geoserver_nginx_doc_root: "/var/www"
 geoserver_force_ssl: true
@@ -203,6 +223,6 @@ geoserver_tomcat_roles:
 geoserver_tomcat_users:
 - username: admin
   password: secret8p646D6UfvmhGUschanged
-  roles: [tomcat]
+  roles: [tomcat, manager-script, manager-jmx, manager-status, manager-gui]
 geoserver_tomcat_service: "tomcat-{{geoserver_name}}"
 geoserver_nofile: 49152

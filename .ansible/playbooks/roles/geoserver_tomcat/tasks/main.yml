@@ -63,7 +63,7 @@
          'template': '../templates/etc/default/tomcat'},
         ] %}
         {{ res | to_json }}
-  - include_role: {name: corpusops.roles/configs, private: true}
+  - include_role: {name: corpusops.roles/configs}
     vars:
       cops_configs_copys: []
       cops_configs_files: "{{cops_configs_filesl.msg}}"

@@ -1,4 +1,4 @@
 ---
 # copy this file instead of symlinking
 geoserver_name: geoserver
-geoserver_version: "2.12.3"
+# geoserver_version: "2.12.3"

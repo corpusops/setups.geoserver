@@ -1,5 +1,5 @@
 ---
-- hosts: geoserver_servers
+- hosts: "{{geoserver_servers|default('geoserver_servers')}}"
   roles: [{role: corpusops.roles/vars}]
   tasks:
   - include_role: {name: geoserver_vars}
