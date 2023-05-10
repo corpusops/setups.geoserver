@@ -7,8 +7,23 @@
   - include_role: {name: geoserver_jdk}
     tags: [jdk]
   - include_role: {name: geoserver_prereqs}
-    tags: [reqs]
+    tags: [reqs, prereqs]
   - include_role: {name: geoserver_nginx}
     tags: [nginx]
   - include_role: {name: geoserver_tomcat}
     tags: [tomcat]
+  - shell: |-
+      set -ex
+      # log4shellhotfix
+      cd "{{geoserver_tomcat_path}}"
+      u=https://repo.osgeo.org/repository/geotools-releases/log4j/log4j/1.2.17.norce/log4j-1.2.17.norce.jar
+      j=$(basename $u)
+      if [ ! -e /usr/share/$j ];then
+        curl $u -o /usr/share/$j
+      fi
+      r=0
+      for i in $(ls -d webapps/*/WEB-INF/lib 2>/dev/null|uniq);do
+        if [ ! -e $i/$j ];then cp -fv /usr/share/$j $i;r=1;fi
+      done
+      if [ "$r" = "1" ];then systemctl restart tomcat-geoserver;fi
+    tags: [cve]
